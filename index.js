@@ -11,9 +11,7 @@ import * as PostController from './controllers/PostController.js';
 mongoose.set('strictQuery', false);
 
 mongoose
-  .connect(
-    'mongodb+srv://admin:ReactBlog007@cluster0.bmhpdht.mongodb.net/socialNetwork?retryWrites=true&w=majority',
-  )
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log('DB ok'))
   .catch(() => console.log('DB error'));
 
@@ -30,7 +28,7 @@ app.get('/posts/:id', PostController.getLikeOne);
 app.post('/posts', checkAuth, postCreateValidation, handleValidationErrors, PostController.create);
 app.delete('/posts/:id', checkAuth, PostController.remove);
 
-app.listen(4444, (err) => {
+app.listen(process.env.PORT || 4444, (err) => {
   if (err) {
     return console.log(err);
   }
