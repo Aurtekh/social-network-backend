@@ -19,6 +19,26 @@ const UserSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
+    status: {
+      type: String,
+      default: '',
+    },
+    birthday: {
+      type: String,
+      default: '',
+    },
+    city: {
+      type: String,
+      default: '',
+    },
+    language: {
+      type: String,
+      default: '',
+    },
+    university: {
+      type: String,
+      default: '',
+    },
     avatarUrl: String,
   },
   {

@@ -12,8 +12,6 @@ export const registerValidation = [
   body('avatarUrl', 'Неверная ссылка на аватарку').optional().isURL(),
 ];
 export const postCreateValidation = [
-  body('title', 'Введите заголовок статьи').isLength({ min: 3 }).isString(),
   body('text', 'Введите текст статьи').isLength({ min: 5 }).isString(),
-  body('tags', 'Неверный формат тэгов укажите теги через запятую').optional().isString(),
   body('imageUrl', 'Неверная ссылка на изображение').optional().isString(),
 ];
