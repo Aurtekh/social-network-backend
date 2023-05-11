@@ -95,3 +95,32 @@ export const getMe = async (req, res) => {
     });
   }
 };
+
+export const updateMe = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    await UserModel.updateOne(
+      {
+        _id: userId,
+      },
+      {
+        fullName: req.body.fullName,
+        status: req.body.status,
+        birthday: req.body.birthday,
+        city: req.body.city,
+        language: req.body.language,
+        university: req.body.university,
+        avatarUrl: req.body.avatarUrl,
+      },
+    );
+    res.json({
+      success: true,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось обновить информацию о себе',
+    });
+  }
+};
