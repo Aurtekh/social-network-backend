@@ -11,9 +11,6 @@ mongoose.set('strictQuery', false);
 
 mongoose
   .connect(process.env.MONGODB_URI)
-  // .connect(
-  //   'mongodb+srv://admin:ReactBlog007@cluster0.bmhpdht.mongodb.net/socialNetwork?retryWrites=true&w=majority',
-  // )
   .then(() => console.log('DB ok'))
   .catch(() => console.log('DB error'));
 
@@ -38,6 +35,7 @@ app.post('/auth/login', loginValidation, handleValidationErrors, UserController.
 app.post('/auth/register', registerValidation, handleValidationErrors, UserController.register);
 app.get('/auth/me', checkAuth, UserController.getMe);
 app.patch('/me/:id', checkAuth, UserController.updateMe);
+app.get('/users/:id', UserController.getAllUsers);
 
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
   res.json({

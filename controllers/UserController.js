@@ -124,3 +124,17 @@ export const updateMe = async (req, res) => {
     });
   }
 };
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const name = req.params.id;
+    const users = await UserModel.find({ fullName: { $regex: name, $options: 'i' } }).exec();
+
+    res.json(users);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось найти пользователей',
+    });
+  }
+};
