@@ -35,7 +35,9 @@ app.post('/auth/login', loginValidation, handleValidationErrors, UserController.
 app.post('/auth/register', registerValidation, handleValidationErrors, UserController.register);
 app.get('/auth/me', checkAuth, UserController.getMe);
 app.patch('/me/:id', checkAuth, UserController.updateMe);
-app.get('/users/:id', UserController.getAllUsers);
+app.get('/users/:id', UserController.getSearchUsers);
+app.get('/user/:id', UserController.getUserOne);
+app.get('/friends/:id', UserController.getUserFriends);
 
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
   res.json({

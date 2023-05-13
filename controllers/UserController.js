@@ -125,7 +125,7 @@ export const updateMe = async (req, res) => {
   }
 };
 
-export const getAllUsers = async (req, res) => {
+export const getSearchUsers = async (req, res) => {
   try {
     const name = req.params.id;
     const users = await UserModel.find({ fullName: { $regex: name, $options: 'i' } }).exec();
@@ -134,7 +134,36 @@ export const getAllUsers = async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: 'Не удалось найти пользователей',
+      message: 'Не удалось найти пользователя',
+    });
+  }
+};
+
+export const getUserOne = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await UserModel.findById({ _id: userId });
+    res.json(user);
+  } catch (err) {
+    console.log(err);
+    res.status(404).json({
+      message: 'Нет такого пользователя',
+    });
+  }
+};
+
+export const getUserFriends = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await UserModel.findById(userId);
+    const arrFriend = user.friends;
+    const friends = await UserModel.find({ _id: { $in: arrFriend } }).exec();
+
+    res.json(friends);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось получить список друзей',
     });
   }
 };
