@@ -11,6 +11,9 @@ mongoose.set('strictQuery', false);
 
 mongoose
   .connect(process.env.MONGODB_URI)
+  // .connect(
+  //   'mongodb+srv://admin:ReactBlog007@cluster0.bmhpdht.mongodb.net/socialNetwork?retryWrites=true&w=majority',
+  // )
   .then(() => console.log('DB ok'))
   .catch(() => console.log('DB error'));
 
@@ -38,6 +41,8 @@ app.patch('/me/:id', checkAuth, UserController.updateMe);
 app.get('/users/:id', UserController.getSearchUsers);
 app.get('/user/:id', UserController.getUserOne);
 app.get('/friends/:id', UserController.getUserFriends);
+app.get('/friends/delete/:id', UserController.deleteFriend);
+app.get('/friends/add/:id', UserController.addFriend);
 
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
   res.json({
