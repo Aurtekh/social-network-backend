@@ -167,3 +167,67 @@ export const getUserFriends = async (req, res) => {
     });
   }
 };
+
+export const deleteFriend = async (req, res) => {
+  try {
+    const token = (req.headers.authorization || '').replace(/Bearer\s?/, '');
+    const decoded = jwt.verify(token, 'secret');
+    req.userId = decoded._id;
+
+    const friendId = req.params.id;
+
+    const doc = await UserModel.findOneAndUpdate(
+      {
+        _id: req.userId,
+      },
+      {
+        $pull: { friends: friendId },
+      },
+    );
+
+    if (!doc) {
+      return res.status(404).json({
+        message: 'Пользователь не найден',
+      });
+    }
+
+    res.json(doc);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось удалить друга',
+    });
+  }
+};
+
+export const addFriend = async (req, res) => {
+  try {
+    const token = (req.headers.authorization || '').replace(/Bearer\s?/, '');
+    const decoded = jwt.verify(token, 'secret');
+    req.userId = decoded._id;
+
+    const friendId = req.params.id;
+
+    const doc = await UserModel.findOneAndUpdate(
+      {
+        _id: req.userId,
+      },
+      {
+        $push: { friends: friendId },
+      },
+    );
+
+    if (!doc) {
+      return res.status(404).json({
+        message: 'Пользователь не найден',
+      });
+    }
+
+    res.json(doc);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось добавить друга',
+    });
+  }
+};
