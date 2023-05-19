@@ -63,7 +63,7 @@ export const getSortPosts = async (req, res) => {
     const posts = await PostModel.find(
       howSortPosts[0] === '0' ? {} : { user: { $in: userInfo.friends } },
     )
-      .sort(howSortPosts[1] === '0' ? { createdAt: -1, updatedAt: -1 } : { like: -1 })
+      .sort(howSortPosts[1] === '0' ? { createdAt: -1, updatedAt: -1 } : { 'like.length': -1 })
       .populate('user')
       .exec();
 
