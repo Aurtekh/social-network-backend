@@ -32,7 +32,7 @@ export const getLikeOne = async (req, res) => {
       },
       {
         $inc: { viewsCount: 1 },
-        $push: { like: req.userId },
+        $addToSet: { like: req.userId },
       },
     ).populate('user');
 
