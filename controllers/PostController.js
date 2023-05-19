@@ -1,5 +1,6 @@
 import PostModel from '../models/Post.js';
 import jwt from 'jsonwebtoken';
+import UserModel from '../models/User.js';
 
 export const getAll = async (req, res) => {
   try {
@@ -42,6 +43,31 @@ export const getLikeOne = async (req, res) => {
     }
 
     res.json(doc);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось получить статью',
+    });
+  }
+};
+
+export const getSortPosts = async (req, res) => {
+  try {
+    const token = (req.headers.authorization || '').replace(/Bearer\s?/, '');
+    const decoded = jwt.verify(token, 'secret');
+    req.userId = decoded._id;
+    const userInfo = await UserModel.findById({ _id: req.userId });
+
+    const howSortPosts = req.params.id;
+    console.log();
+    const posts = await PostModel.find(
+      howSortPosts[0] === '0' ? {} : { user: { $in: userInfo.friends } },
+    )
+      .sort(howSortPosts[1] === '0' ? { createdAt: -1, updatedAt: -1 } : { like: -1 })
+      .populate('user')
+      .exec();
+
+    res.json(posts);
   } catch (err) {
     console.log(err);
     res.status(500).json({
