@@ -60,12 +60,22 @@ export const getSortPosts = async (req, res) => {
 
     const howSortPosts = req.params.id;
     console.log();
-    const posts = await PostModel.find(
-      howSortPosts[0] === '0' ? {} : { user: { $in: userInfo.friends } },
-    )
-      .sort(howSortPosts[1] === '0' ? { createdAt: -1, updatedAt: -1 } : { 'like.length': -1 })
-      .populate('user')
-      .exec();
+
+    const posts = await PostModel.aggregate([
+      { $addFields: { likesCount: { $size: '$like' } } },
+      { $sort: howSortPosts[1] === '0' ? { createdAt: -1, updatedAt: -1 } : { 'like.length': -1 } },
+      { $sort: { likesCount: -1 } },
+      { $match: howSortPosts[0] === '0' ? {} : { user: { $in: userInfo.friends } } },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+      { $unwind: '$user' },
+    ]).exec();
 
     res.json(posts);
   } catch (err) {
