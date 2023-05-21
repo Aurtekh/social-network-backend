@@ -1,6 +1,7 @@
 import PostModel from '../models/Post.js';
 import jwt from 'jsonwebtoken';
 import UserModel from '../models/User.js';
+import mongoose from 'mongoose';
 
 export const getAll = async (req, res) => {
   try {
@@ -59,13 +60,22 @@ export const getSortPosts = async (req, res) => {
     const userInfo = await UserModel.findById({ _id: req.userId });
 
     const howSortPosts = req.params.id;
-    console.log();
 
     const posts = await PostModel.aggregate([
+      {
+        $match:
+          howSortPosts[0] === '0'
+            ? {}
+            : {
+                user: {
+                  $in: userInfo.friends.map(function (id) {
+                    return new mongoose.Types.ObjectId(id);
+                  }),
+                },
+              },
+      },
       { $addFields: { likesCount: { $size: '$like' } } },
-      { $sort: howSortPosts[1] === '0' ? { createdAt: -1, updatedAt: -1 } : { 'like.length': -1 } },
-      { $sort: { likesCount: -1 } },
-      { $match: howSortPosts[0] === '0' ? {} : { user: { $in: userInfo.friends } } },
+      { $sort: howSortPosts[1] === '0' ? { createdAt: -1, updatedAt: -1 } : { likesCount: -1 } },
       {
         $lookup: {
           from: 'users',
