@@ -5,7 +5,7 @@ import cors from 'cors';
 import { registerValidation, loginValidation, postCreateValidation } from './validations.js';
 
 import { checkAuth, handleValidationErrors } from './utils/index.js';
-import { UserController, PostController } from './controllers/index.js';
+import { UserController, PostController, DialogController } from './controllers/index.js';
 
 mongoose.set('strictQuery', false);
 
@@ -52,6 +52,10 @@ app.get('/posts/:id', PostController.getLikeOne);
 app.get('/posts/sort/:id', PostController.getSortPosts);
 app.post('/posts', checkAuth, postCreateValidation, handleValidationErrors, PostController.create);
 app.delete('/posts/:id', checkAuth, PostController.remove);
+
+app.post('/dialogs/:id', checkAuth, handleValidationErrors, DialogController.sendMessage);
+app.get('/dialogs/:id', DialogController.getMessage);
+app.get('/dialogs', DialogController.getDialogs);
 
 app.listen(process.env.PORT || 4444, (err) => {
   if (err) {
