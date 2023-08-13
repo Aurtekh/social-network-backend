@@ -55,6 +55,7 @@ app.delete('/posts/:id', checkAuth, PostController.remove);
 
 app.post('/dialogs/:id', checkAuth, handleValidationErrors, DialogController.sendMessage);
 app.get('/dialogs/:id', DialogController.getMessage);
+app.get('/dialogs/new/:id', DialogController.getNewMessage);
 app.get('/dialogs', DialogController.getDialogs);
 
 app.listen(process.env.PORT || 4444, (err) => {

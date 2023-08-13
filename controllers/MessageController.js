@@ -74,6 +74,39 @@ export const getMessage = async (req, res) => {
   }
 };
 
+export const getNewMessage = async (req, res) => {
+  try {
+    const token = (req.headers.authorization || '').replace(/Bearer\s?/, '');
+    const decoded = jwt.verify(token, 'secret');
+    req.userId = decoded._id; //мой id
+    const anotherInterlocutorId = req.params.id; //id собеседника
+
+    const doc = await MessageModel.find({
+      $or: [
+        { sender: req.userId, recipient: anotherInterlocutorId },
+        { recipient: req.userId, sender: anotherInterlocutorId },
+      ],
+    })
+      .sort({ date: 1 })
+      .populate('sender')
+      .populate('recipient')
+      .exec();
+
+    if (!doc) {
+      return res.status(404).json({
+        message: 'Не удалось получить сообщения',
+      });
+    }
+
+    res.json(doc);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось получить сообщения',
+    });
+  }
+};
+
 export const getDialogs = async (req, res) => {
   try {
     const token = (req.headers.authorization || '').replace(/Bearer\s?/, '');
